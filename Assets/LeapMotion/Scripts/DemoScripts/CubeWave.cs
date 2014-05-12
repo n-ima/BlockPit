@@ -38,6 +38,7 @@ public class CubeWave : MonoBehaviour {
     float center_x = gridWidth * cellWidth / 2.0f;
     float center_y = gridHeight * cellHeight / 2.0f;
 
+    // Setup the cube grid.
     for (int r = 1; r <= gridHeight; ++r) {
       for (int c = 1; c <= gridWidth; ++c) {
         Vector3 location = new Vector3(c * cellWidth - center_x, 0, r * cellHeight - center_y);
@@ -54,6 +55,8 @@ public class CubeWave : MonoBehaviour {
 
     for (int r = 1; r <= gridHeight; ++r) {
       for (int c = 1; c <= gridWidth; ++c) {
+
+        // Discrete wave equation with damping.
         float neighbor_sum = (cube_grid_[r - 1, c].position.y + cube_grid_[r, c - 1].position.y +
                               cube_grid_[r + 1, c].position.y + cube_grid_[r, c + 1].position.y);
 
@@ -61,6 +64,7 @@ public class CubeWave : MonoBehaviour {
         cube_grid_[r, c].rigidbody.AddForce(springConstant * Vector3.up * delta_from_rest);
         cube_grid_[r, c].rigidbody.velocity *= (1 - damping);
 
+        // Set color of cube and add to glow amount based on current height.
         float delta_zero = transform.position.y - cube_grid_[r, c].position.y;
         float brightness = BASE_BRIGHTNESS +
                            BRIGHTNESS_SCALE * Mathf.Log(1 + 0.2f * delta_zero);
@@ -76,6 +80,7 @@ public class CubeWave : MonoBehaviour {
       }
     }
 
+    // Set glow amount.
     if (lowGlow != null)
       lowGlow.intensity = low_total_light;
     if (highGlow != null)
